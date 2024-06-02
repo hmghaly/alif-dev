@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>1001 Words</title>
+     <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+      <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+    
+    <link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
+    <script src="https://hmghaly.github.io/script.js"></script> 
+    
+
+
+	<style type="text/css">
+body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #FAFAFA;
+        font: 12pt "Tahoma";
+    }
+    * {
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+    }
+    .page {
+        width: 210mm;
+        min-height: 297mm;
+        padding: 20mm;
+        margin: 10mm auto;
+/*        border: 1px #D3D3D3 solid;*/
+        border-radius: 5px;
+        background: white;
+/*        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);*/
+    }
+    .subpage {
+        padding: 1cm;
+/*        border: 5px red solid;*/
+        height: 257mm;
+/*        outline: 2cm #FFEAEA solid;*/
+    }
+    
+    @page {
+        size: A4;
+        margin: 0;
+    }
+    @media print {
+        html, body {
+            width: 210mm;
+            height: 297mm;        
+        }
+        .page {
+            margin: 0;
+            border: initial;
+            border-radius: initial;
+            width: initial;
+            min-height: initial;
+            box-shadow: initial;
+            background: initial;
+            page-break-after: always;
+        }
+    }		
+
+        .half {
+          width: 50%;
+/*          background: tomato;*/
+        }
+        
+
+	</style>
+    <script>
+        app_name = "1001";
+        data_dict = get_local_storage_data(app_name);
+        if (data_dict == null || data_dict == undefined) data_dict = {};
+        learned=data_dict["learned"] || []
+        //if (data_dict == null || data_dict == undefined) learned=[]
+        data_dict["learned"]=learned
+        last_page=data_dict["last_page"] || 0
+        data_dict["last_page"]=last_page
+        
+        
+
+        
+        function deploy_learn_word(obj1){
+            //open modal
+            $('#learn_word_modal').modal('show');
+            trg0=obj1.currentTarget
+            if (trg0==null) trg0=obj1
+            console.log(trg0)
+            cur_data=trg0.dataset.data
+            console.log(cur_data)
+            data_dict=JSON.parse(atob(cur_data))
+            console.log(data_dict)
+            
+//            word_meaning="last"
+//            word_obj_list=[{"id":"aa","label":"آ"},{"id":"khi","label":"خِ"},{"id":"r","label":"ر"}]
+            
+            word_meaning=data_dict["gloss"]
+            word_obj_list=data_dict["chunks"]
+            
+            quiz_area=$$("quiz_area")
+            prompt_area=$$("prompt_area")
+            answer_area=$$("answer_area")
+            
+            prompt_area.innerHTML=word_meaning
+            quiz_area.innerHTML=""
+            answer_area.innerHTML=""
+            
+            for (it0 of word_obj_list){
+                btn0=create_el("button",quiz_area)
+                btn0.className="btn btn-primary m-2"
+                btn0.innerHTML=it0.label
+                btn0.dataset.id=it0.id
+                btn0.onclick=function(obj0){check_word_segment(obj0)}
+                
+            }
+            
+            //deploy word segments
+            //
+            
+        }
+        
+        function check_word_segment(obj1){
+            trg0=obj1.currentTarget
+            if (trg0==null) trg0=obj1
+            console.log(trg0)
+            
+            answer_area=$$("answer_area")
+            answer_area.innerHTML+=trg0.innerHTML
+            trg0.remove()
+            
+            
+        }
+        
+        function add_learned_word(){
+            //add learned word (info/object) to repretoire list in local storage
+        }
+        
+        function play_audio(obj1){
+            trg0=obj1.currentTarget
+            if (trg0==null) trg0=obj1
+            data_set=trg0.dataset || {}
+            audio_url=data_set["audio"]
+            if (audio_url==null) return
+            new Audio(audio_url).play(); 
+        }
+        
+        function prev_page(obj1){
+            trg0=obj1.currentTarget
+            if (trg0==null) trg0=obj1
+            console.log(trg0)
+        }
+        function next_page(obj1){
+            trg0=obj1.currentTarget
+            if (trg0==null) trg0=obj1
+            console.log(trg0)
+        }
+        
+        function init(){
+            console.log(data_dict)
+            last_page=data_dict["last_page"]
+            last_page_header_id="header_page_"+last_page
+            
+            scroll2el($$(last_page_header_id))
+            
+            
+        }
+        
+        function reset_local_data() {
+          data_dict = {};
+          update_local_data();
+        }
+    </script>
+</head>
+<body onload="init()">
+
+<div class="book">
+
+    <div class="page" hidden>
+
+        <div class="subpage">
+        	<h1>Introduction</h1>
+        	<p id="intro_text">
+        		1001 Words is a comprehensive Arabic vocabulary book that will help you learn and master over a thousand essential words. The book introduces all the words with their pronunciation, plural forms, and example sentences to help you understand them in context. It also has interactive features that allow you to play audio clips of the words, practice spelling and memorization, and track your progress. Whether you're a beginner or an advanced learner, 1001 Words is the perfect resource for expanding your Arabic vocabulary.
+
+        	</p>
+			
+        </div>   
+        
+    </div>
+    
+    <div hidden>
+<div id="sample_page" class="page word_page">
+                <div class="subpage text-center">
+                    <div id="main_part" style="height: 95%">
+                        <div id="word_number_div">
+                            <i class="em em-one" aria-role="presentation" aria-label="KEYCAP 1"></i>
+                            <i class="em em-seven" aria-role="presentation" aria-label="KEYCAP 1"></i>
+                            <i class="em em-five" aria-role="presentation" aria-label="KEYCAP 1"></i>
+                        </div>
+                    <h1 id="word_main_entry">
+                        آخر
+                    </h1>
+                    <table class="table table-striped table-bordered">
+                        <tr  id="word_forms_tr" class="table-primary">
+                            <td></td>
+                            <td>
+                                <div class="h2">آخِر</div>
+                            </td>
+                            <td><div class="h2">آخَر</div></td>
+                        </tr>
+                        <tr id="pronunciation_tr">
+                            <td>Pronunciation
+                            <i class="em em-lips" aria-role="presentation" aria-label="MOUTH"></i>
+                            </td>
+                            <td>
+                                <a href="#">
+                                aakhir
+                                <i class="em em-loud_sound" aria-role="presentation" aria-label="SPEAKER WITH THREE SOUND WAVES"></i>
+                                </a>
+                                
+                            </td>
+                            <td>aakhar
+                            <i class="em em-loud_sound" aria-role="presentation" aria-label="SPEAKER WITH THREE SOUND WAVES"></i>
+                            </td>
+                        </tr>
+                        <tr  id="word_type_tr">
+                            <td>Type
+                            <i class="em em-bricks" aria-role="presentation" aria-label="BRICK"></i>
+                            </td>
+                            <td>Noun</td>
+                            <td>Adjective</td>
+                        </tr>
+
+                        <tr  id="word_meaning_tr">
+                            <td>Meaning
+                                <i class="em em-bulb" aria-role="presentation" aria-label="ELECTRIC LIGHT BULB"></i>
+                            </td>
+                            <td>last</td>
+                            <td>other</td>
+                        </tr>
+                        <tr  id="word_plural_tr">
+                            <td>Plural
+                            <i class="em em-house_buildings" aria-role="presentation" aria-label=""></i>
+                            </td>
+                            <td>awaakhir أواخِر</td>
+                            <td>aakharoon آخَرون</td>
+                        </tr>
+                        <tr id="word_learn_tr">
+                            <td></td>
+                            <td>
+                                <button type="button" class="btn btn-outline-primary" onclick="deploy_learn_word(this)">Learn
+                                <i class="em em-brain" aria-role="presentation" aria-label="BRAIN"></i>
+                                </button>
+                            </td>
+                            <td>
+                            <button type="button" class="btn btn-outline-primary" onclick="deploy_learn_word(this)">Learn
+                                <i class="em em-brain" aria-role="presentation" aria-label="BRAIN"></i>
+                                </button>
+                            </td>
+                        </tr>
+
+                    </table>
+                        
+                        
+                        
+                    
+                    <div>
+                        <h4>Examples <i class="em em-rolled_up_newspaper" aria-role="presentation" aria-label=""></i></h4>
+                        <table id="example_table" class="table table-striped table-bordered">
+                            <tr><td>1</td><td>2</td><td>3</td></tr>
+                        </table>
+                    </div>
+                    <div>
+                        <h4>Practice
+                        <i class="em em-person_climbing" aria-role="presentation" aria-label="PERSON CLIMBING"></i>
+                        </h4>
+                        <table id="practice_table" class="table table-striped table-bordered">
+                            <tr><td>1</td><td>2</td><td>3</td></tr>
+                        </table>
+                    </div>
+
+<!--                    Start of footer-->
+                        <div class="container">
+                          <div class="row">
+                            <div class="col">
+                              <button type="button" id="prev_btn" onclick="next_page(this)" class="btn btn-outline-primary btn-block">
+                        <i class="em em-arrow_backward" aria-role="presentation" aria-label="BLACK LEFT-POINTING TRIANGLE"></i>
+                           Previous    
+                        </button>
+                                     
+                            </div>
+                            <div class="col">
+                                <button type="button" class="btn btn-outline-primary btn-block" data-bs-toggle="modal" data-bs-target="#repretoire_modal">
+                                    <span id="n_learned_words" class="badge bg-secondary">0</span> 
+                                Words
+                                    <i class="em em-brain" aria-role="presentation" aria-label="BRAIN"></i></button>  
+                                
+                            </div>
+                            <div class="col">
+                              <button type="button" id="next_btn" onclick="next_page(this)" class="btn btn-outline-primary">
+                           Next    
+                            <i class="em em-arrow_forward" aria-role="presentation" aria-label="BLACK RIGHT-POINTING TRIANGLE"></i>
+                        </button>
+
+                                
+                            </div>
+                          </div>
+                        </div>
+<!--                        End of footer-->
+                        
+                    </div>
+<!--                    End of main part-->
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+      
+                </div>
+        </div>
+        
+    </div>
+
+
+    <div id="word_pages">
+        
+        
+    </div>
+    
+    
+
+    
+    
+    
+    <div id="word_pages1" hidden>
+        <div class="page">
+                <div class="subpage text-center">
+                    <div id="word_section" class="" style="height: 30%">
+                        <h1 id="main_word">ملك</h1>
+                        <div id="main_word_row" class="row">
+                            <div id="diac_column" class="col">
+                                <div id="diac_word">مِلك</div>
+                                <div id="diac_word_rom">milk</div>
+                                <div id="plural">amlaak أملاك</div>
+                                <div id="gloss">property</div>
+                                <button id="learn_btn" type="button" class="btn btn-outline-primary mt-1">Learn 🧠</button>
+
+
+                            </div>
+                            <div class="col">
+                                <div name="word_image"><img src="https://img.icons8.com/color/angel"></div>
+                                <div name="diac_word">مَلَك</div>
+                                <div name="diac_word_rom">malak</div>
+                                <div name="plural">malaa2ikah مَلائكَة</div>
+                                <div name="gloss">angel</div>
+                                <button type="button" class="btn btn-outline-primary mt-1">Learn 🧠</button>
+                                
+                                
+                            </div>
+                            <div class="col">
+                                <div name="word_image"><img src="https://img.icons8.com/color/old-king"></div>
+                                <div name="diac_word">مَلِك</div>
+                                <div name="diac_word_rom">malik</div>
+                                <div name="plural">mulook مُلوك</div>
+                                <div name="gloss">king</div>
+                                <button type="button" class="btn btn-outline-primary mt-1">Learn 🧠</button>
+                                
+
+                                
+                            </div>
+                            <div class="col">مُلك</div>
+                        </div>
+                    </div>
+                    <div name="example_section" class="">
+                        <h3>Examples</h3>
+                        <table class="table">
+
+                            <tbody id="example_table_old">
+                            <tr>
+                              <td>The old king</td>
+                              <td>al-malik al-3ajooz</td>
+                              <td>الملك العجوز</td>
+                            </tr>
+                            <tr>
+                              <td>I saw the king</td>
+                              <td>ra2aytu al-malik</td>
+                              <td>رأيت الملك</td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                        
+                        
+                    </div>
+                    <div name="practice_section" class="">
+                        <h3>Practice</h3>
+                        <h5>Answer the following:</h5>
+                        <table class="table">
+                            <thead>
+                                <th>Word</th>
+                                <th>Equivalent</th>
+                            </thead>
+
+                            <tbody id="practice_table_old">
+                            <tr>
+                              <td>The old king</td>
+                              <td>al-malik al-3ajooz</td>
+                              <td>الملك العجوز</td>
+                            </tr>
+                            <tr>
+                              <td>I saw the king</td>
+                              <td>ra2aytu al-malik</td>
+                              <td>رأيت الملك</td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+
+                    </div>
+
+
+                </div>
+            </div>        
+        
+    
+    </div>
+    
+
+</div>
+    
+    
+<!-- Modal -->
+<div class="modal fade" id="learn_word_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content text-center">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Learn Word</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <div class="m-2 text-center" id="prompt_area"></div>
+        <div class="m-2 text-center" id="answer_area"></div>
+      <div  class="m-2" id="quiz_area" class="modal-body">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">More</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="repretoire_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Repretoire - Learned Words</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+<!--        <button type="button" class="btn btn-primary">Repeat</button>-->
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+<div id="sound_elements"></div>
+
+</body>
+</html>
+
+
